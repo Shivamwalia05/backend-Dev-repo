@@ -1,9 +1,10 @@
 import express from "express";
-import { getAllReports, addReport } from "../controllers/reportController.js";
+import { energyReport,EnergyConsumptionReport,pumpingReport } from "../controllers/reportController.js";
 
 const router = express.Router();
 
-router.get("/", getAllReports); 
-router.post("/", addReport); 
+router.get("/energyReport", energyReport); 
+router.get("/energyConsumptionReport", EnergyConsumptionReport); 
+router.get("/pumpingReport", pumpingReport); 
 
 export default router;
