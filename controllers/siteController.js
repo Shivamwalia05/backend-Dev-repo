@@ -1,44 +1,78 @@
-import Site from "../models/Site.js";
+import Site from '../models/Site.js';
 
-// Get all sites
-export const getAllSites = async (req, res) => {
+export const uploadSitesData = async (req, res) => {
   try {
-    const sites = await Site.find();
-    res.json(sites);
+    const sites = req.body;
+    if (!Array.isArray(sites) || sites.length === 0) {
+      return res.status(400).json({ error: 'Input must be a non-empty array of sites' });
+    }
+
+    const operations = sites.map(site => ({
+      updateOne: {
+        filter: { siteName: site.siteName },
+        update: { $set: site },
+        upsert: true
+      }
+    }));
+
+    await Site.bulkWrite(operations, { ordered: false });
+
+    res.status(201).json({ message: 'Sites uploaded successfully' });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    console.error('Upload error:', error.message);
+    res.status(500).json({ error: 'Failed to upload sites' });
   }
 };
 
-// Get site by ID
-export const getSiteById = async (req, res) => {
+export const getSiteByName = async (req, res) => {
   try {
-    const site = await Site.findOne({ siteId: req.params.siteId });
+    const { siteName } = req.params;
+    const [site] = await Site.aggregate([
+      { $match: { siteName } },
+      {
+        $project: {
+          siteName: 1,
+          online: 1,
+          params: {
+            $arrayToObject: {
+              $map: {
+                input: "$params",
+                as: "param",
+                in: {
+                  k: "$$param.label",
+                  v: { value: "$$param.value", unit: "$$param.unit" }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]);
+
     if (!site) {
-      return res.status(404).json({ message: "Site not found" });
+      return res.status(404).json({ error: 'Site not found' });
     }
-    res.json(site);
+
+    res.status(200).json(site);
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    console.error('Get site error:', error.message);
+    res.status(500).json({ error: 'Failed to retrieve site' });
   }
 };
 
-// Add a new site
-export const addSite = async (req, res) => {
+export const getSiteNames = async (req, res) => {
   try {
-    const { siteId, siteName } = req.body;
-
-    
-    const existingSite = await Site.findOne({ siteId });
-    if (existingSite) {
-      return res.status(400).json({ message: "Site ID already exists" });
-    }
-
-    const newSite = new Site({ siteId, siteName });
-    await newSite.save();
-
-    res.status(201).json({ message: "Site added successfully", newSite });
+    const siteNames = await Site.aggregate([
+      {
+        $project: {
+          _id: 0, 
+          siteName: 1 
+        }
+      }
+    ]);
+    res.status(200).json(siteNames);
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    console.error('Get site names error:', error.message);
+    res.status(500).json({ error: 'Failed to retrieve site names' });
   }
 };
