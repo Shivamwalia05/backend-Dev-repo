@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import reportRoutes from "./routes/reportRoutes.js";
-import siteRoutes from "./routes/siteRoutes.js";  
+import siteRoutes from "./routes/siteRoutes.js";
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ connectDB();
 
 // Use Routes.
 app.use("/api/report", reportRoutes);
-app.use("/api/sites", siteRoutes);  
+app.use('/api', siteRoutes);
 
 const PORT = process.env.PORT || 5000;
 
