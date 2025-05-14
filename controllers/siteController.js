@@ -60,13 +60,14 @@ export const getSiteByName = async (req, res) => {
   }
 };
 
-export const getSiteNames = async (req, res) => {
+export const getAllSites = async (req, res) => {
   try {
     const siteNames = await Site.aggregate([
       {
         $project: {
-          _id: 0, 
-          siteName: 1 
+          _id: 0,
+          siteName: 1,
+          online: 1
         }
       }
     ]);
