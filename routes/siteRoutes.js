@@ -1,10 +1,10 @@
-import express from "express";
-import { getAllSites, getSiteById, addSite } from "../controllers/siteController.js";
+import express from 'express';
+import { uploadSitesData, getSiteByName, getSiteNames } from '../controllers/siteController.js';
 
 const router = express.Router();
 
-router.get("/", getAllSites);
-router.get("/:siteId", getSiteById);
-router.post("/", addSite);
+router.post('/sites', uploadSitesData);
+router.get('/sites/names', getSiteNames);
+router.get('/sites/:siteName', getSiteByName);
 
 export default router;
