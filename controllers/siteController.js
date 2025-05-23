@@ -27,27 +27,7 @@ export const uploadSitesData = async (req, res) => {
 export const getSiteByName = async (req, res) => {
   try {
     const { siteName } = req.params;
-    const [site] = await Site.aggregate([
-      { $match: { siteName } },
-      {
-        $project: {
-          siteName: 1,
-          online: 1,
-          params: {
-            $arrayToObject: {
-              $map: {
-                input: "$params",
-                as: "param",
-                in: {
-                  k: "$$param.label",
-                  v: { value: "$$param.value", unit: "$$param.unit" }
-                }
-              }
-            }
-          }
-        }
-      }
-    ]);
+    const site = await Site.findOne({ siteName }).lean();
 
     if (!site) {
       return res.status(404).json({ error: 'Site not found' });
@@ -67,7 +47,9 @@ export const getAllSites = async (req, res) => {
         $project: {
           _id: 0,
           siteName: 1,
-          online: 1
+          objecttype: 1,
+          objectname: 1,
+          tagnames: 1
         }
       }
     ]);
