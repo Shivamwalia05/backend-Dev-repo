@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const ParamSchema = new mongoose.Schema({
   label: { type: String, required: true },
   tagname: { type: String, required: true },
+  unit: { type: String, default: '' },
 }, { _id: false });
 
 const SiteSchema = new mongoose.Schema({
@@ -11,7 +12,8 @@ const SiteSchema = new mongoose.Schema({
   objecttype: { type: String, required: true },
   objectname: { type: String, required: true },
   tagnames: { type: String, required: true },
-  params: { type: mongoose.Schema.Types.Mixed, required: true },
+  params: { type: [ParamSchema], required: true },
+  priority: { type: Number, default: 0 }, 
 });
 
 export default mongoose.model('Site', SiteSchema);
