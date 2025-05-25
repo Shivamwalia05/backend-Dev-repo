@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import siteRoutes from "./routes/siteRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ connectDB();
 // Use Routes.
 app.use("/api/report", reportRoutes);
 app.use('/api', siteRoutes);
+app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 
