@@ -1,4 +1,4 @@
-import Site from '../models/Site.js';
+import Site from '../models/site.js';
 
 export const uploadSitesData = async (req, res) => {
   try {
