@@ -1,4 +1,4 @@
-import Site from '../models/site.js';
+import Site from '../models/Site.js';
 
 export const uploadSitesData = async (req, res) => {
   try {
@@ -60,7 +60,9 @@ export const getAllSites = async (req, res) => {
           objectname: 1,
           tagnames: 1,
           online: 1,
-          priority: 1 // Include priority in projection
+          priority: 1 ,
+          params: 1,
+         groupname: 1 
         }
       },
       {
